@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarCodeEncoder", "BarCodeEncoder\BarCodeEncoder.csproj", "{009571A8-8168-47EC-B543-22C09B7F271E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{009571A8-8168-47EC-B543-22C09B7F271E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{009571A8-8168-47EC-B543-22C09B7F271E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{009571A8-8168-47EC-B543-22C09B7F271E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{009571A8-8168-47EC-B543-22C09B7F271E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CCC6D1B2-1AC4-4C48-81A5-C64684908756}
+	EndGlobalSection
+EndGlobal
