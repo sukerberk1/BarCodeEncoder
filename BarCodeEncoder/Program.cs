@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.ComponentModel.Design;
 using System.Drawing;
+using System.Net.Http.Headers;
 using System.Text;
 
 
@@ -22,8 +24,17 @@ int GenerateCode(string data)
 {
     const int BarCodeHeight = 100;
     var BarCode = new Bitmap(data.Length*8, BarCodeHeight);
-    byte[] asciiValues = Encoding.ASCII.GetBytes(data);
-    foreach (var v in asciiValues) Console.WriteLine(v);
+    byte[] asciiValues;
+    try
+    {
+        asciiValues = Encoding.ASCII.GetBytes(data);
+    }
+    catch (Exception ex) 
+    { 
+        Console.WriteLine(ex.Message);
+        Console.WriteLine("There is an unsupported character in your prompt");
+        return 0;
+    }
     for (int i = 0; i < asciiValues.Length; i++)
     {
         var value = asciiValues[i];
@@ -43,7 +54,7 @@ int GenerateCode(string data)
                 break;
             }
         }
-        while (binary.Length <= 8)
+        while (binary.Length < 8)
         {
             binary = binary.Insert(0, "0");
         }
@@ -56,10 +67,10 @@ int GenerateCode(string data)
                     binary[a%8] == '1' ? Color.Black : Color.White
                     );
             }
-            Console.WriteLine($"Encoding stripe: {a}");
         }
         BarCode.Save(Directory.GetCurrentDirectory()+"\\barcode.bmp");
     }
+    Console.WriteLine("Barcode saved.");
     return 1;
 }
 
@@ -67,26 +78,30 @@ int DecodeBarcode(string filename)
 {
     var bitmap = new Bitmap(Directory.GetCurrentDirectory() + "\\" + filename);
     List<byte> decoded = new List<byte>();
-    for (int i=0; i<bitmap.Width/8; i++) 
+    int current = 0;
+    for (int i = 0; i < bitmap.Width; i++)
     {
-        bool[] stripes = new bool[8];
-        for (int a = 0+i*8; a < 8+i*8; a++)
+        if (bitmap.GetPixel(i, 0).ToArgb() == Color.Black.ToArgb())
         {
-            if (bitmap.GetPixel(a, 0).ToArgb() == Color.Black.ToArgb()) stripes[a % 8] = true;
-            else stripes[a % 8] = false;
+            switch (i%8)
+            {
+                case 1: current += 64; break;
+                case 2: current += 32; break;
+                case 3: current += 16; break;
+                case 4: current += 8; break;
+                case 5: current += 4; break;
+                case 6: current += 2; break;
+                case 7: current += 1; break;
+            }
         }
-        int asciiValue = 0;
-        int addent = 128;
-        for (int s=0; s < stripes.Length; s++)
+        
+        if (i%8 == 0 && i != 0 || i == bitmap.Width-1)
         {
-            if (stripes[s]) asciiValue += addent;
-            addent /= 2;
+            decoded.Add((byte)current);
+            current = 0;
         }
-        decoded.Add((byte)asciiValue);
     }
-    foreach (byte b in decoded) Console.WriteLine(b);
-
-    Console.WriteLine($"Decoded string: {Encoding.ASCII.GetString(decoded.ToArray())}");
+    Console.WriteLine($"Decoded text: {Encoding.ASCII.GetString(decoded.ToArray())}");
     return 2;
 }
 
